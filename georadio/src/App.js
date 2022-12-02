@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import UserCard from "./components/user-card";
 import UserList from "./components/user-list";
+import useGetUsersInfo from "./hooks/useGetUsersInfo";
 
 const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
 const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
@@ -10,10 +11,11 @@ function App() {
   const [accessToken, setAccessToken] = useState("Bearer ");
   const [searchParams, setSearchParams] = useState({});
   const [myuserList, setUserList] = useState([]);
-
-  console.log(process.env.REACT_APP_CLIENT_ID);
+  const [userInfoState, setUserInfo] = useState([])
+  const usersInfo = useGetUsersInfo();
 
   useEffect(() => {
+    setUserInfo(usersInfo)
     search();
   }, []);
 
@@ -36,8 +38,6 @@ function App() {
         setAccessToken("Bearer " + data.access_token);
       });
     const token = await GetAuthToken();
-    console.log("Token", token);
-    console.log("Access2: ", accessToken);
 
     const currentSearchParams = {
       method: "GET",
@@ -112,8 +112,6 @@ function App() {
       } catch (error) {}
     }
 
-    console.log("TestevW: ", userListArray);
-
     await setUserList(userListArray);
   }
 
@@ -126,11 +124,11 @@ function App() {
         .then((data) => (user = data));
     } catch (error) {}
 
-    console.log("User: ", user);
     return user;
   };
 
-  return (
+  console.log("UsersInfo", userInfoState)
+  return (!!userInfoState &&
     <>
       <h1>GeoRadio Police</h1>
       <UserList userList={myuserList}></UserList>

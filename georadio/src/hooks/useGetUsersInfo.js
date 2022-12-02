@@ -2,42 +2,41 @@ const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
 const CLIENT_SECRET = process.env.REACT_APP_CLIENT_SECRET;
 const PLAYLIST_ID = "7yBUhZvvCxKLk9jsYL9etb";
 
-const useGetUsersInfo = () => {
+const useGetUsersInfo = async () => {
     const token = await GetAuthToken();
-    console.log("Token", token);
 
-    const currentSearchParams = {
-    method: "GET",
-    headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-    },
+    const searchParams = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+        },
     };
   
-    setTimeout(setSearchParams(currentSearchParams), 10000);
+    //setTimeout(setSearchParams(currentSearchParams), 10000);
 
     let songMap = [];
 
     await fetch(
-    "https://api.spotify.com/v1/playlists/" + PLAYLIST_ID + "/tracks",
-    currentSearchParams
+        "https://api.spotify.com/v1/playlists/" + PLAYLIST_ID + "/tracks",
+        searchParams
     )
-    .then((response) => response.json())
-    .then((data) => {
-        const songsArray = data.items.map((s) => s);
-        songsArray.forEach((x) => {
-        let user = x.added_by;
-        let x2 = {
-            user: {
-            id: user.id,
-            href: user.href,
-            },
-            track: x.track,
-        };
+        .then((response) => response.json())
+        .then((data) => {
+            const songsArray = data.items.map((s) => s);
+            songsArray.forEach((x) => {
+                let user = x.added_by;
+                let x2 = {
+                    user: {
+                    id: user.id,
+                    href: user.href,
+                    },
+                    track: x.track,
+                };
 
-        songMap.push(x2);
+            songMap.push(x2);
+            });
         });
-    });
 
     const usersArray = songMap.map((x) => x);
 
@@ -63,7 +62,7 @@ const useGetUsersInfo = () => {
     const user = userlistExtended[i];
 
     try {
-        const myuser = await getUserByUrl(user.url);
+        const myuser = await getUserByUrl(user.url, searchParams);
         const username = myuser.display_name;
         const img_url = myuser.images[0].url;
         let u = {
@@ -79,12 +78,10 @@ const useGetUsersInfo = () => {
     } catch (error) {}
     }
 
-    console.log("TestevW: ", userListArray);
-
-    await setUserList(userListArray);
+    return userListArray;
 }
 
-const getUserByUrl = async (id) => {
+const getUserByUrl = async (id, searchParams) => {
     let user = "";
 
     try {
@@ -93,7 +90,6 @@ const getUserByUrl = async (id) => {
         .then((data) => (user = data));
     } catch (error) {}
 
-    console.log("User: ", user);
     return user;
   };
 

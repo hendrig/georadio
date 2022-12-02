@@ -8,7 +8,6 @@ const UserCard = (userName, qtty) => {
   if (isNaN(quantity)) {
     quantity = 0;
   }
-  console.log(userName)
 
   return (
     <StyledUserCard className="userCard">
