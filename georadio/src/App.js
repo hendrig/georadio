@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import UserCard from "./components/user-card";
 import UserList from "./components/user-list";
 import useGetUsersInfo from "./hooks/useGetUsersInfo";
 

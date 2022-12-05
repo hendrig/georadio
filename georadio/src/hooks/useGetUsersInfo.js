@@ -12,8 +12,6 @@ const useGetUsersInfo = async () => {
             Authorization: token,
         },
     };
-  
-    //setTimeout(setSearchParams(currentSearchParams), 10000);
 
     let songMap = [];
 
