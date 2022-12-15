@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useAuthenticationContext } from "../contexts/AuthenticationContext";
 
-const GetPlaylist = ({ playlistId, nextCall = undefined }) => {
+const GetPlaylist = ({
+  playlistId,
+  nextCall = undefined,
+  previousList = [],
+}) => {
   const { accessToken } = useAuthenticationContext();
   const [next, setNext] = useState(undefined);
 
@@ -15,6 +19,10 @@ const GetPlaylist = ({ playlistId, nextCall = undefined }) => {
 
   let songMap = [];
 
+  if (previousList.length > 0) {
+    console.log("Previous list", previousList);
+    songMap.concat(previousList);
+  }
   const address =
     nextCall === undefined
       ? "https://api.spotify.com/v1/playlists/" +
@@ -22,10 +30,8 @@ const GetPlaylist = ({ playlistId, nextCall = undefined }) => {
         "/tracks?offset=0&limit=100"
       : nextCall;
 
-  console.log("Calling address ", address);
-  console.log("Access Token ", accessToken);
-
   async function fetchList(fetchAddress, searchParams) {
+    console.log("previous> ", previousList.length);
     await fetch(fetchAddress, searchParams)
       .then((response) => response.json())
       .then((data) => {
@@ -42,14 +48,15 @@ const GetPlaylist = ({ playlistId, nextCall = undefined }) => {
 
           songMap.push(x2);
         });
-
-        console.log("0", data);
+        if (previousList.length > 0) {
+          console.log("PUshing");
+          previousList.forEach((x) => songMap.push(x));
+        }
         setNext(data.next);
       });
   }
 
   fetchList(address, currentSearchParams);
-  console.log("NEXT IS ", next);
   return [songMap, next];
 };
 
