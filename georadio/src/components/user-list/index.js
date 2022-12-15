@@ -1,8 +1,7 @@
 import UserCard from "../user-card";
 import UserListStyled from "./index.styled";
 
-const UserList = ({userList}) => {
-
+const UserList = ({ userList }) => {
   return (
     <UserListStyled>
       {userList.map((u) => (
@@ -10,7 +9,7 @@ const UserList = ({userList}) => {
           key={u.userName}
           userName={u.userName}
           qtty={u.qtty}
-          img_url={u.img_url}
+          // img_url={u.img_url}
         />
       ))}
     </UserListStyled>
